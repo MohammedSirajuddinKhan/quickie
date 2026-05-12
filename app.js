@@ -15,6 +15,10 @@ app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
+app.get("/favicon.ico", (req, res) => {
+  return res.sendFile(path.join(__dirname, "public", "favicon.svg"));
+});
+
 app.use((req, res, next) => {
   if (!MONGODB_URI) {
     return res
@@ -38,7 +42,7 @@ app.get("/", (req, res) => {
 
 app.use("/url", urlRoute);
 
-app.get("/:shortId", async (req, res) => {
+app.get("/:shortId([A-Za-z0-9_-]{8})", async (req, res) => {
   try {
     await connectToMongoDB(MONGODB_URI);
   } catch (error) {
