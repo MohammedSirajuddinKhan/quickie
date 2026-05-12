@@ -6,7 +6,14 @@ async function connectToMongoDB(url) {
   }
 
   if (!global.mongooseConnectionPromise) {
-    global.mongooseConnectionPromise = mongoose.connect(url);
+    global.mongooseConnectionPromise = mongoose
+      .connect(url, {
+        serverSelectionTimeoutMS: 5000,
+      })
+      .catch((error) => {
+        global.mongooseConnectionPromise = null;
+        throw error;
+      });
   }
 
   await global.mongooseConnectionPromise;

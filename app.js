@@ -39,7 +39,17 @@ app.get("/", (req, res) => {
 app.use("/url", urlRoute);
 
 app.get("/:shortId", async (req, res) => {
-  await connectToMongoDB(MONGODB_URI);
+  try {
+    await connectToMongoDB(MONGODB_URI);
+  } catch (error) {
+    return res.status(500).render("index", {
+      shortUrl: null,
+      displayShortUrl: null,
+      originalUrl: null,
+      error:
+        "Database connection failed. Check MONGODB_URI and Atlas access settings.",
+    });
+  }
 
   const shortId = req.params.shortId;
   const entry = await URL.findOneAndUpdate(

@@ -18,7 +18,18 @@ async function handleGenerateNewShortUrl(req, res) {
     });
   }
 
-  await connectToMongoDB(mongoUri);
+  try {
+    await connectToMongoDB(mongoUri);
+  } catch (error) {
+    return res.status(500).render("index", {
+      shortUrl: null,
+      displayShortUrl: null,
+      shortId: null,
+      originalUrl: body.url || null,
+      error:
+        "Database connection failed. Check MONGODB_URI and Atlas access settings.",
+    });
+  }
 
   const body = req.body;
   if (!body.url)
@@ -57,7 +68,17 @@ async function handleGetAnalytics(req, res) {
     });
   }
 
-  await connectToMongoDB(mongoUri);
+  try {
+    await connectToMongoDB(mongoUri);
+  } catch (error) {
+    return res.status(500).render("analytics", {
+      shortId: req.params.shortId,
+      totalClicks: 0,
+      analytics: [],
+      error:
+        "Database connection failed. Check MONGODB_URI and Atlas access settings.",
+    });
+  }
 
   const shortId = req.params.shortId;
   const result = await URL.findOne({
