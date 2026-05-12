@@ -1,0 +1,19 @@
+{
+  "name": "quickie",
+  "version": "1.0.0",
+  "description": "url shortner",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MohammedSirajuddinKhan/quickie.git"
+  },
+  "author": "sirajuddin khan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MohammedSirajuddinKhan/quickie/issues"
+  },
+  "homepage": "https://github.com/MohammedSirajuddinKhan/quickie#readme"
+}
