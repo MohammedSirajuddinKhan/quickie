@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quickie | Shorten Links Fast</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <section class="hero-card">
+        <div class="brand-row">
+          <div class="brand-mark">Q</div>
+          <div>
+            <p class="eyebrow">Quickie</p>
+            <h1>Short links, built for speed.</h1>
+          </div>
+        </div>
+
+        <p class="hero-copy">
+          Turn long URLs into clean, trackable links with a focused interface and
+          live click analytics.
+        </p>
+
+        <form class="shorten-form" action="/url" method="post">
+          <label for="url">Destination URL</label>
+          <div class="input-row">
+            <input
+              id="url"
+              name="url"
+              type="url"
+              placeholder="https://example.com/very/long/link"
+              value="<%= originalUrl || '' %>"
+              required
+            />
+            <button type="submit">Create link</button>
+          </div>
+        </form>
+
+        <% if (error) { %>
+          <div class="status status-error"><%= error %></div>
+        <% } %>
+
+        <% if (shortUrl) { %>
+          <div class="status status-success">
+            <div>
+              <span class="status-label">Your Quickie link</span>
+              <a href="<%= shortUrl %>" target="_blank" rel="noreferrer"><%= displayShortUrl %></a>
+            </div>
+            <a class="analytics-link" href="/url/analytics/<%= shortId %>" style="color: #04111f;">View analytics</a>
+          </div>
+        <% } %>
+
+        <div class="feature-grid">
+          <article>
+            <h2>Fast creation</h2>
+            <p>Generate a compact branded link in one step.</p>
+          </article>
+          <article>
+            <h2>Click tracking</h2>
+            <p>Each redirect is logged with a timestamp for analytics.</p>
+          </article>
+          <article>
+            <h2>Clean reporting</h2>
+            <p>See total clicks and the full visit history in one place.</p>
+          </article>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>

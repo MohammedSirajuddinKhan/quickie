@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quickie | Analytics</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <section class="hero-card analytics-card">
+        <div class="brand-row">
+          <div class="brand-mark">Q</div>
+          <div>
+            <p class="eyebrow">Quickie</p>
+            <h1>Link analytics</h1>
+          </div>
+        </div>
+
+        <% if (error) { %>
+          <div class="status status-error"><%= error %></div>
+        <% } else { %>
+          <div class="stats-panel">
+            <div class="stat-card">
+              <span>Total clicks</span>
+              <strong><%= totalClicks %></strong>
+            </div>
+            <div class="stat-card">
+              <span>Short ID</span>
+              <strong><%= shortId %></strong>
+            </div>
+          </div>
+
+          <div class="timeline-block">
+            <div class="timeline-head">
+              <h2>Visit history</h2>
+              <p><%= analytics.length %> recorded events</p>
+            </div>
+
+            <% if (analytics.length === 0) { %>
+              <p class="empty-state">No clicks yet. Share the link and check back soon.</p>
+            <% } else { %>
+              <div class="timeline-list">
+                <% analytics.map((item, index) => { %>
+                  <div class="timeline-item">
+                    <span class="timeline-index"><%= index + 1 %></span>
+                    <div>
+                      <p>Visit recorded</p>
+                      <small><%= new Date(item.timestamp).toLocaleString() %></small>
+                    </div>
+                  </div>
+                <% }) %>
+              </div>
+            <% } %>
+          </div>
+        <% } %>
+
+        <a class="back-link" href="/">Back to Quickie</a>
+      </section>
+    </div>
+  </body>
+</html>
