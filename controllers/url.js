@@ -7,6 +7,17 @@ async function handleGenerateNewShortUrl(req, res) {
   const localBaseUrl = `${req.protocol}://${req.get("host")}`;
   const mongoUri = process.env.MONGODB_URI;
 
+  if (!mongoUri) {
+    return res.status(500).render("index", {
+      shortUrl: null,
+      displayShortUrl: null,
+      shortId: null,
+      originalUrl: req.body?.url || null,
+      error:
+        "MONGODB_URI is missing. Configure it in Vercel environment variables.",
+    });
+  }
+
   await connectToMongoDB(mongoUri);
 
   const body = req.body;
@@ -34,7 +45,19 @@ async function handleGenerateNewShortUrl(req, res) {
 }
 
 async function handleGetAnalytics(req, res) {
-  await connectToMongoDB(process.env.MONGODB_URI);
+  const mongoUri = process.env.MONGODB_URI;
+
+  if (!mongoUri) {
+    return res.status(500).render("analytics", {
+      shortId: req.params.shortId,
+      totalClicks: 0,
+      analytics: [],
+      error:
+        "MONGODB_URI is missing. Configure it in Vercel environment variables.",
+    });
+  }
+
+  await connectToMongoDB(mongoUri);
 
   const shortId = req.params.shortId;
   const result = await URL.findOne({

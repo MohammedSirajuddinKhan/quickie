@@ -8,16 +8,24 @@ const URL = require("./models/url.js");
 const app = express();
 const MONGODB_URI = process.env.MONGODB_URI;
 
-if (!MONGODB_URI) {
-  throw new Error("MONGODB_URI is required");
-}
-
 app.set("trust proxy", 1);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+
+app.use((req, res, next) => {
+  if (!MONGODB_URI) {
+    return res
+      .status(500)
+      .send(
+        "MONGODB_URI is not configured. Set it in Vercel project environment variables and redeploy.",
+      );
+  }
+
+  return next();
+});
 
 app.get("/", (req, res) => {
   res.render("index", {
