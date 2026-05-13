@@ -6,6 +6,7 @@ async function handleGenerateNewShortUrl(req, res) {
   const publicBaseUrl = process.env.PUBLIC_BASE_URL || "http://quickie";
   const localBaseUrl = `${req.protocol}://${req.get("host")}`;
   const mongoUri = process.env.MONGODB_URI;
+  const body = req.body || {};
 
   if (!mongoUri) {
     return res.status(500).render("index", {
@@ -31,7 +32,6 @@ async function handleGenerateNewShortUrl(req, res) {
     });
   }
 
-  const body = req.body;
   if (!body.url)
     return res.status(400).render("index", {
       shortUrl: null,

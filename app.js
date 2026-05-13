@@ -19,6 +19,13 @@ app.get("/favicon.ico", (req, res) => {
   return res.sendFile(path.join(__dirname, "public", "favicon.svg"));
 });
 
+app.get("/health", (req, res) => {
+  return res.status(200).json({
+    ok: true,
+    service: "quickie",
+  });
+});
+
 app.use((req, res, next) => {
   if (!MONGODB_URI) {
     return res
@@ -36,13 +43,26 @@ app.get("/", (req, res) => {
     shortUrl: null,
     displayShortUrl: null,
     originalUrl: null,
+    shortId: null,
     error: null,
   });
 });
 
 app.use("/url", urlRoute);
 
-app.get("/:shortId([A-Za-z0-9_-]{8})", async (req, res) => {
+app.get("/:shortId", async (req, res) => {
+  const shortId = req.params.shortId;
+
+  if (!/^[A-Za-z0-9_-]{8}$/.test(shortId)) {
+    return res.status(404).render("index", {
+      shortUrl: null,
+      displayShortUrl: null,
+      originalUrl: null,
+      shortId: null,
+      error: "Short link not found.",
+    });
+  }
+
   try {
     await connectToMongoDB(MONGODB_URI);
   } catch (error) {
@@ -50,12 +70,12 @@ app.get("/:shortId([A-Za-z0-9_-]{8})", async (req, res) => {
       shortUrl: null,
       displayShortUrl: null,
       originalUrl: null,
+      shortId: null,
       error:
         "Database connection failed. Check MONGODB_URI and Atlas access settings.",
     });
   }
 
-  const shortId = req.params.shortId;
   const entry = await URL.findOneAndUpdate(
     {
       shortId,
@@ -72,6 +92,7 @@ app.get("/:shortId([A-Za-z0-9_-]{8})", async (req, res) => {
       shortUrl: null,
       displayShortUrl: null,
       originalUrl: null,
+      shortId: null,
       error: "Short link not found.",
     });
   }

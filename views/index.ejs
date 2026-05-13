@@ -48,6 +48,14 @@
           <div class="status status-error"><%= error %></div>
         <% } %>
 
+        <div
+          id="saved-link-slot"
+          data-has-server-link="<%= shortUrl ? 'true' : 'false' %>"
+          data-short-url="<%= shortUrl || '' %>"
+          data-display-short-url="<%= displayShortUrl || '' %>"
+          data-short-id="<%= shortId || '' %>"
+        ></div>
+
         <% if (shortUrl) { %>
           <div class="status status-success">
             <div>
@@ -74,5 +82,55 @@
         </div>
       </section>
     </div>
+    <script>
+      (function () {
+        const storageKey = "quickie:lastLink";
+        const slot = document.getElementById("saved-link-slot");
+        const hasServerLink = slot?.dataset.hasServerLink === "true";
+
+        function saveLink(payload) {
+          try {
+            localStorage.setItem(storageKey, JSON.stringify(payload));
+          } catch (error) {
+            // Ignore storage failures and keep the page functional.
+          }
+        }
+
+        function loadLink() {
+          try {
+            const raw = localStorage.getItem(storageKey);
+            return raw ? JSON.parse(raw) : null;
+          } catch (error) {
+            return null;
+          }
+        }
+
+        function renderLink(payload) {
+          if (!slot || !payload || !payload.shortUrl || !payload.displayShortUrl || !payload.shortId) {
+            return;
+          }
+
+          slot.innerHTML = `
+            <div class="status status-success">
+              <div>
+                <span class="status-label">Your Quickie link</span>
+                <a href="${payload.shortUrl}" target="_blank" rel="noreferrer">${payload.displayShortUrl}</a>
+              </div>
+              <a class="analytics-link" href="/url/analytics/${payload.shortId}">View analytics</a>
+            </div>
+          `;
+        }
+
+        if (hasServerLink) {
+          saveLink({
+            shortUrl: slot.dataset.shortUrl || "",
+            displayShortUrl: slot.dataset.displayShortUrl || "",
+            shortId: slot.dataset.shortId || "",
+          });
+        } else {
+          renderLink(loadLink());
+        }
+      })();
+    </script>
   </body>
 </html>

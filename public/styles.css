@@ -210,6 +210,10 @@ button:hover,
   word-break: break-all;
 }
 
+.status .analytics-link {
+  color: #04111f;
+}
+
 .status-error {
   background: rgba(255, 122, 144, 0.1);
   color: #ffd7de;

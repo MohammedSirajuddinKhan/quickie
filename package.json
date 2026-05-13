@@ -4,8 +4,9 @@
   "description": "url shortner",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "npx nodemon index.js"
+    "start": "npx nodemon index.js",
+    "dev": "npx nodemon index.js",
+    "smoke": "node scripts/smoke-test.js"
   },
   "repository": {
     "type": "git",
