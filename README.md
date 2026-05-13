@@ -1,8 +1,8 @@
 # Quickie
 
-Quickie is a tiny URL shortener built with Express, EJS, and MongoDB.
+## Quickie is a tiny URL shortener built with Express, EJS and MongoDB.
 
-Live demo: https://quickie-ashy.vercel.app/
+### Live demo: https://quickie-ashy.vercel.app/
 
 Quick start
 

@@ -58,11 +58,14 @@
 
         <% if (shortUrl) { %>
           <div class="status status-success">
-            <div>
-              <span class="status-label">Your Quickie link</span>
-              <a href="<%= shortUrl %>" target="_blank" rel="noreferrer"><%= displayShortUrl %></a>
-            </div>
-            <a class="analytics-link" href="/url/analytics/<%= shortId %>">View analytics</a>
+                <div>
+                  <span class="status-label">Your Quickie link</span>
+                  <a href="<%= shortUrl %>" target="_blank" rel="noreferrer"><%= displayShortUrl %></a>
+                </div>
+                <div class="status-actions">
+                  <a class="analytics-link" href="/url/analytics/<%= shortId %>">View analytics</a>
+                  <button type="button" class="analytics-link new-quickie">New Quickie</button>
+                </div>
           </div>
         <% } %>
 
@@ -96,6 +99,25 @@
           }
         }
 
+        // If the page was loaded via a manual reload, clear the saved link so
+        // the Quickie link does not persist across refreshes.
+        (function clearOnReload() {
+          try {
+            const navEntries = performance.getEntriesByType
+              ? performance.getEntriesByType("navigation")
+              : [];
+
+            const navType = (navEntries && navEntries[0] && navEntries[0].type) ||
+              (performance && performance.navigation && performance.navigation.type === 1 ? 'reload' : null);
+
+            if (navType === 'reload') {
+              localStorage.removeItem(storageKey);
+            }
+          } catch (e) {
+            // Ignore — navigation timing may not be available in some browsers.
+          }
+        })();
+
         function loadLink() {
           try {
             const raw = localStorage.getItem(storageKey);
@@ -116,7 +138,10 @@
                 <span class="status-label">Your Quickie link</span>
                 <a href="${payload.shortUrl}" target="_blank" rel="noreferrer">${payload.displayShortUrl}</a>
               </div>
-              <a class="analytics-link" href="/url/analytics/${payload.shortId}">View analytics</a>
+              <div class="status-actions">
+                <a class="analytics-link" href="/url/analytics/${payload.shortId}">View analytics</a>
+                <button type="button" class="analytics-link new-quickie">New Quickie</button>
+              </div>
             </div>
           `;
         }
@@ -130,6 +155,27 @@
         } else {
           renderLink(loadLink());
         }
+
+        function clearSavedAndUI() {
+          try { localStorage.removeItem(storageKey); } catch (e) {}
+          if (slot) slot.innerHTML = '';
+          const urlInput = document.getElementById('url');
+          if (urlInput) urlInput.value = '';
+
+          document.querySelectorAll('.status.status-success').forEach(el => {
+            const label = el.querySelector('.status-label');
+            if (label && label.textContent && label.textContent.trim() === 'Your Quickie link') {
+              el.remove();
+            }
+          });
+        }
+
+        document.addEventListener('click', (e) => {
+          const target = e.target;
+          if (target && target.classList && target.classList.contains('new-quickie')) {
+            clearSavedAndUI();
+          }
+        });
       })();
     </script>
   </body>
